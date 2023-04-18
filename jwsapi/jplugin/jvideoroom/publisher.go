@@ -3,12 +3,12 @@ package jvideoroom
 import (
 	"context"
 
-	"github.com/newzai/janus-go/jwsapi"
-	"github.com/newzai/janus-go/logging"
+	"github.com/enhao/janus-go/jwsapi"
+	"github.com/enhao/janus-go/logging"
 	"github.com/pkg/errors"
 )
 
-//PublisherState publisher state
+// PublisherState publisher state
 type PublisherState int
 
 const (
@@ -20,7 +20,7 @@ const (
 	PublisherStatePublished
 )
 
-//Publisher publisher
+// Publisher publisher
 type Publisher struct {
 	ctx     context.Context
 	handle  *jwsapi.Handle
@@ -37,45 +37,45 @@ type Publisher struct {
 	onStateChanged func(PublisherState)
 }
 
-//PublisherOption 参数化
+// PublisherOption 参数化
 type PublisherOption func(*Publisher)
 
-//WithPublisherOptionID client set publisher id, optional
+// WithPublisherOptionID client set publisher id, optional
 func WithPublisherOptionID(id uint64) PublisherOption {
 	return func(p *Publisher) {
 		p.id = id
 	}
 }
 
-//WithPublisherOptionDisplay set display for this publisher, optional
+// WithPublisherOptionDisplay set display for this publisher, optional
 func WithPublisherOptionDisplay(display string) PublisherOption {
 	return func(p *Publisher) {
 		p.display = display
 	}
 }
 
-//WithPublisherOptionNewPublisher set other on newpublisher callback
+// WithPublisherOptionNewPublisher set other on newpublisher callback
 func WithPublisherOptionNewPublisher(callback func(Participant)) PublisherOption {
 	return func(p *Publisher) {
 		p.onNewPublisher = callback
 	}
 }
 
-//WithPublisherOptionUnpublished set other unpublished callback.
+// WithPublisherOptionUnpublished set other unpublished callback.
 func WithPublisherOptionUnpublished(callback func(uint64)) PublisherOption {
 	return func(p *Publisher) {
 		p.onUnpublished = callback
 	}
 }
 
-//WithPublisherOptionLeaved set other publisher leaved callback
+// WithPublisherOptionLeaved set other publisher leaved callback
 func WithPublisherOptionLeaved(callback func(uint64)) PublisherOption {
 	return func(p *Publisher) {
 		p.onLeaved = callback
 	}
 }
 
-//NewPublisher create new publisher
+// NewPublisher create new publisher
 func NewPublisher(ctx context.Context, h *jwsapi.Handle, room uint64, opts ...PublisherOption) *Publisher {
 
 	p := &Publisher{
@@ -96,34 +96,34 @@ func NewPublisher(ctx context.Context, h *jwsapi.Handle, room uint64, opts ...Pu
 	return p
 }
 
-//ID get id
+// ID get id
 func (p *Publisher) ID() uint64 {
 	return p.id
 }
 
-//Display get display
+// Display get display
 func (p *Publisher) Display() string {
 	return p.display
 }
 
-//Room get room
+// Room get room
 func (p *Publisher) Room() uint64 {
 	return p.room
 }
 
-//Handle return handle
+// Handle return handle
 func (p *Publisher) Handle() *jwsapi.Handle {
 	return p.handle
 }
 
-//SetOption set param, callback, eg: WithPublisherOptionNewPublisher
+// SetOption set param, callback, eg: WithPublisherOptionNewPublisher
 func (p *Publisher) SetOption(opts ...PublisherOption) {
 	for _, opt := range opts {
 		opt(p)
 	}
 }
 
-//Join join to janus
+// Join join to janus
 func (p *Publisher) Join(opts ...jwsapi.MessageOption) error {
 
 	body := jwsapi.Message{
@@ -157,8 +157,8 @@ func (p *Publisher) Join(opts ...jwsapi.MessageOption) error {
 	return nil
 }
 
-//Publish start offer
-//return answer, error
+// Publish start offer
+// return answer, error
 func (p *Publisher) Publish(audio bool, video bool, data bool, offer string, trickle bool, opts ...jwsapi.MessageOption) (string, error) {
 	body := jwsapi.Message{
 		jwsapi.AttrRequest: "configure",
@@ -194,7 +194,7 @@ func (p *Publisher) Publish(audio bool, video bool, data bool, offer string, tri
 
 }
 
-//Unpublish tell janus-gateway close PeerConnection
+// Unpublish tell janus-gateway close PeerConnection
 func (p *Publisher) Unpublish() error {
 
 	body := jwsapi.Message{
@@ -205,7 +205,7 @@ func (p *Publisher) Unpublish() error {
 	return err
 }
 
-//Leave leave the room
+// Leave leave the room
 func (p *Publisher) Leave() error {
 	body := jwsapi.Message{
 		jwsapi.AttrRequest: "leave",

@@ -8,9 +8,9 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/enhao/janus-go/logging"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
-	"github.com/newzai/janus-go/logging"
 	"github.com/pkg/errors"
 )
 
@@ -45,7 +45,7 @@ func getTID() string {
 	return uid.String()
 }
 
-//Connection a ws connection
+// Connection a ws connection
 // auto reConnection if ws conn is closed
 // auto claim all session when reConnection is success
 type Connection struct {
@@ -71,7 +71,7 @@ type Connection struct {
 	state               connState
 }
 
-//NewConnection create new janus gateway connection
+// NewConnection create new janus gateway connection
 func NewConnection(ctx context.Context, url string, id int) *Connection {
 	conn := &Connection{
 		ctx:                 ctx,
@@ -100,12 +100,12 @@ func NewConnection(ctx context.Context, url string, id int) *Connection {
 	return conn
 }
 
-//ID return this connection id
+// ID return this connection id
 func (c *Connection) ID() string {
 	return fmt.Sprintf("[%s@%d_%d]", c.url, c.id, c.cc)
 }
 
-//IsDestroy is destroy for this object
+// IsDestroy is destroy for this object
 func (c *Connection) IsDestroy() bool {
 	if atomic.LoadInt32(&c.isDestroy) == 1 {
 		return true
@@ -330,7 +330,7 @@ func (c *Connection) sendMessage(tid string, msg Message, callback onResponse) {
 	c.sendChan <- data
 }
 
-//Request send request ,has success response
+// Request send request ,has success response
 func (c *Connection) Request(request Message) (*Message, error) {
 	if c.IsDestroy() {
 		return nil, errors.New("conn is destroy")
@@ -359,7 +359,7 @@ func (c *Connection) Request(request Message) (*Message, error) {
 
 }
 
-//Message send message, has ack, event response
+// Message send message, has ack, event response
 func (c *Connection) Message(msg Message) (*Message, error) {
 	if c.IsDestroy() {
 		return nil, errors.New("conn is destroy")
@@ -398,7 +398,7 @@ func (c *Connection) Message(msg Message) (*Message, error) {
 	}
 }
 
-//Create ceeate New Session
+// Create ceeate New Session
 func (c *Connection) Create() (*Session, error) {
 
 	msg := Message{

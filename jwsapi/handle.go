@@ -4,11 +4,11 @@ import (
 	"context"
 	"sync/atomic"
 
-	"github.com/newzai/janus-go/logging"
+	"github.com/enhao/janus-go/logging"
 	"github.com/pkg/errors"
 )
 
-//Handle janus gateway plugin handle
+// Handle janus gateway plugin handle
 type Handle struct {
 	ctx       context.Context
 	ID        uint64
@@ -23,45 +23,45 @@ type Handle struct {
 	onTrickle  func(Message)
 }
 
-//HandleCallbackOption setting option
+// HandleCallbackOption setting option
 type HandleCallbackOption func(*Handle)
 
-//WithHandleWebrtcup set webrtcup callback..
+// WithHandleWebrtcup set webrtcup callback..
 func WithHandleWebrtcup(callback func(Message)) HandleCallbackOption {
 	return func(h *Handle) {
 		h.onWebrtcup = callback
 	}
 }
 
-//WithHandleMedia set on media callback
+// WithHandleMedia set on media callback
 func WithHandleMedia(callback func(Message)) HandleCallbackOption {
 	return func(h *Handle) {
 		h.onMedia = callback
 	}
 }
 
-//WithHandleSlowLink set slow link callback
+// WithHandleSlowLink set slow link callback
 func WithHandleSlowLink(callback func(Message)) HandleCallbackOption {
 	return func(h *Handle) {
 		h.onSlowLink = callback
 	}
 }
 
-//WithHandleHangup set hangup callback
+// WithHandleHangup set hangup callback
 func WithHandleHangup(callback func(Message)) HandleCallbackOption {
 	return func(h *Handle) {
 		h.onHangup = callback
 	}
 }
 
-//WithHandleTrickle set trickle callback
+// WithHandleTrickle set trickle callback
 func WithHandleTrickle(callback func(Message)) HandleCallbackOption {
 	return func(h *Handle) {
 		h.onTrickle = callback
 	}
 }
 
-//NewHandle new handle.
+// NewHandle new handle.
 func NewHandle(ctx context.Context, id uint64, sess *Session) *Handle {
 
 	h := &Handle{
@@ -76,7 +76,7 @@ func NewHandle(ctx context.Context, id uint64, sess *Session) *Handle {
 	return h
 }
 
-//IsDestroy is destroy
+// IsDestroy is destroy
 func (h *Handle) IsDestroy() bool {
 	if atomic.LoadInt32(&h.isDestroy) == 1 {
 		return true
@@ -84,7 +84,7 @@ func (h *Handle) IsDestroy() bool {
 	return false
 }
 
-//SetCallback set callback using WithHandleWebrtcup,WithHandleMedia...
+// SetCallback set callback using WithHandleWebrtcup,WithHandleMedia...
 func (h *Handle) SetCallback(opts ...HandleCallbackOption) {
 
 	for _, opt := range opts {
@@ -92,7 +92,7 @@ func (h *Handle) SetCallback(opts ...HandleCallbackOption) {
 	}
 }
 
-//Request send request, has success response
+// Request send request, has success response
 func (h *Handle) Request(body Message) (*Message, error) {
 	if h.IsDestroy() {
 		return nil, errors.New("has detach")
@@ -107,7 +107,7 @@ func (h *Handle) Request(body Message) (*Message, error) {
 	return h.s.Request(msg)
 }
 
-//Message send message to janus, has ack ,event resposne
+// Message send message to janus, has ack ,event resposne
 func (h *Handle) Message(body Message) (*Message, error) {
 	if h.IsDestroy() {
 		return nil, errors.New("has detach")
@@ -120,7 +120,7 @@ func (h *Handle) Message(body Message) (*Message, error) {
 	return h.s.Message(msg)
 }
 
-//JsepMessage jsep use to send Offer or Answer
+// JsepMessage jsep use to send Offer or Answer
 func (h *Handle) JsepMessage(body Message, jsep Message) (*Message, error) {
 	if h.IsDestroy() {
 		return nil, errors.New("has detach")
@@ -136,7 +136,7 @@ func (h *Handle) JsepMessage(body Message, jsep Message) (*Message, error) {
 
 }
 
-//Trickle send local candidae
+// Trickle send local candidae
 func (h *Handle) Trickle(candidate Message) error {
 
 	msg := Message{
@@ -148,7 +148,7 @@ func (h *Handle) Trickle(candidate Message) error {
 	return err
 }
 
-//Detach release plugin handle at janus-gateway
+// Detach release plugin handle at janus-gateway
 func (h *Handle) Detach() error {
 	msg := Message{
 		attrType:     "detach",

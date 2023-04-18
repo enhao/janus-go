@@ -4,14 +4,14 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/newzai/janus-go/jwsapi"
-	"github.com/newzai/janus-go/jwsapi/jplugin/jvideoroom"
-	"github.com/newzai/janus-go/logging"
+	"github.com/enhao/janus-go/jwsapi"
+	"github.com/enhao/janus-go/jwsapi/jplugin/jvideoroom"
+	"github.com/enhao/janus-go/logging"
 	"github.com/pion/webrtc/v2"
 	"github.com/pkg/errors"
 )
 
-//Subscriber a subscriber object.
+// Subscriber a subscriber object.
 type Subscriber struct {
 	BaseSession
 	jSub         *jvideoroom.Subscriber
@@ -21,31 +21,31 @@ type Subscriber struct {
 	onVideoTrack func(context.Context, *webrtc.Track)
 }
 
-//SubscriberOption option for Subscriber
+// SubscriberOption option for Subscriber
 type SubscriberOption func(*Subscriber)
 
-//WithSubscriberAudioTrack using to setting audio track callback
+// WithSubscriberAudioTrack using to setting audio track callback
 func WithSubscriberAudioTrack(callback func(context.Context, *webrtc.Track)) SubscriberOption {
 	return func(s *Subscriber) {
 		s.onAudioTrack = callback
 	}
 }
 
-//WithSubscriberVideoTrack using to setting audio track callback
+// WithSubscriberVideoTrack using to setting audio track callback
 func WithSubscriberVideoTrack(callback func(context.Context, *webrtc.Track)) SubscriberOption {
 	return func(s *Subscriber) {
 		s.onVideoTrack = callback
 	}
 }
 
-//WithSubscriberConfigure set webrtc configure
+// WithSubscriberConfigure set webrtc configure
 func WithSubscriberConfigure(configure webrtc.Configuration) SubscriberOption {
 	return func(s *Subscriber) {
 		s.configure = configure
 	}
 }
 
-//NewSubscriber new subscriber
+// NewSubscriber new subscriber
 func NewSubscriber(ctx context.Context, api *webrtc.API, h *jwsapi.Handle, room uint64, feed uint64) *Subscriber {
 	s := &Subscriber{
 		BaseSession: BaseSession{
@@ -67,17 +67,17 @@ func NewSubscriber(ctx context.Context, api *webrtc.API, h *jwsapi.Handle, room 
 	return s
 }
 
-//Object return jvideoroom.Subscriber
+// Object return jvideoroom.Subscriber
 func (s *Subscriber) Object() *jvideoroom.Subscriber {
 	return s.jSub
 }
 
-//ID return id for this subscriber
+// ID return id for this subscriber
 func (s *Subscriber) ID() string {
 	return fmt.Sprintf("[%d.Feed.%d", s.jSub.Room(), s.jSub.Feed())
 }
 
-//SetOption set option, for callback
+// SetOption set option, for callback
 func (s *Subscriber) SetOption(opts ...SubscriberOption) *Subscriber {
 	for _, opt := range opts {
 		opt(s)
@@ -85,12 +85,12 @@ func (s *Subscriber) SetOption(opts ...SubscriberOption) *Subscriber {
 	return s
 }
 
-//Start start pull stream from janus
-//audio,video default is true, data default is false
-//optional or default param can use jwsapi.WithMessageOption to setting
-//other params see  https://jwsapi.conf.meetecho.com/docs/videoroom.html VideoRoom Subscribers join
-//jwsapi.WithMessageOption("video",false) to ignore video stream
-//janus-gateway must open ice-lite=true
+// Start start pull stream from janus
+// audio,video default is true, data default is false
+// optional or default param can use jwsapi.WithMessageOption to setting
+// other params see  https://jwsapi.conf.meetecho.com/docs/videoroom.html VideoRoom Subscribers join
+// jwsapi.WithMessageOption("video",false) to ignore video stream
+// janus-gateway must open ice-lite=true
 func (s *Subscriber) Start(opts ...jwsapi.MessageOption) error {
 
 	offer, err := s.jSub.Join(opts...)
@@ -156,7 +156,7 @@ func (s *Subscriber) Start(opts ...jwsapi.MessageOption) error {
 	return nil
 }
 
-//Leave leave pull stream
+// Leave leave pull stream
 func (s *Subscriber) Leave() error {
 	if s.pc != nil {
 		s.pc.Close()

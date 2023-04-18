@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/cihub/seelog"
-	"github.com/newzai/janus-go/jwsapi"
-	"github.com/newzai/janus-go/jwsapi/jplugin/jvideoroom"
-	"github.com/newzai/janus-go/logging"
-	"github.com/newzai/janus-go/videoroom"
+	"github.com/enhao/janus-go/jwsapi"
+	"github.com/enhao/janus-go/jwsapi/jplugin/jvideoroom"
+	"github.com/enhao/janus-go/logging"
+	"github.com/enhao/janus-go/videoroom"
 	"github.com/pion/webrtc/v2"
 	"github.com/pkg/errors"
 )
@@ -25,7 +25,7 @@ var (
 	api *webrtc.API
 )
 
-//Init init webrt
+// Init init webrt
 func Init(portMin int, portMax int) {
 	m = webrtc.MediaEngine{}
 	m.RegisterDefaultCodecs()
@@ -64,8 +64,8 @@ func main() {
 	<-time.After(time.Second * 3)
 }
 
-//VideoRoomBridge bridge ..
-//pull stream from sub , and using pub look back to room.
+// VideoRoomBridge bridge ..
+// pull stream from sub , and using pub look back to room.
 type VideoRoomBridge struct {
 	ctx  context.Context
 	url  string
@@ -76,7 +76,7 @@ type VideoRoomBridge struct {
 	sub  *videoroom.Subscriber
 }
 
-//NewVideoRoomBridge new bridge
+// NewVideoRoomBridge new bridge
 func NewVideoRoomBridge(ctx context.Context, url string, room uint64) *VideoRoomBridge {
 
 	vrb := &VideoRoomBridge{
@@ -134,7 +134,7 @@ func (vrb *VideoRoomBridge) onVideoTrack(ctx context.Context, track *webrtc.Trac
 	}
 }
 
-//Start ..
+// Start ..
 func (vrb *VideoRoomBridge) Start() error {
 
 	sess, err := vrb.conn.Create()
@@ -202,7 +202,7 @@ func (vrb *VideoRoomBridge) onSubHangup(jwsapi.Message) {
 	vrb.sub = nil
 }
 
-//Stop destroy..
+// Stop destroy..
 func (vrb *VideoRoomBridge) Stop() {
 	vrb.sess.Destroy()
 	vrb.sess = nil

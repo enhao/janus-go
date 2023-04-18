@@ -1,10 +1,10 @@
 package jvideoroom
 
 import (
-	"github.com/newzai/janus-go/jwsapi"
+	"github.com/enhao/janus-go/jwsapi"
 )
 
-//UserType user type , publisher, subscriber
+// UserType user type , publisher, subscriber
 type UserType int
 
 const (
@@ -25,37 +25,37 @@ func (ut UserType) String() string {
 	}
 }
 
-//WithMessageOptionRoom set room id
+// WithMessageOptionRoom set room id
 func WithMessageOptionRoom(room uint64) jwsapi.MessageOption {
 	return func(param jwsapi.Message) {
 		param["room"] = room
 	}
 }
 
-//WithMessageOptionPermanet set room permanent
+// WithMessageOptionPermanet set room permanent
 func WithMessageOptionPermanet(permanent bool) jwsapi.MessageOption {
 	return func(param jwsapi.Message) {
 		param["permanent"] = permanent
 	}
 }
 
-//WithMessageOptionDescription set room description
+// WithMessageOptionDescription set room description
 func WithMessageOptionDescription(description string) jwsapi.MessageOption {
 	return func(param jwsapi.Message) {
 		param["description"] = description
 	}
 }
 
-//WithMessageOptionSecret set secret
+// WithMessageOptionSecret set secret
 func WithMessageOptionSecret(secret string) jwsapi.MessageOption {
 	return func(param jwsapi.Message) {
 		param["secret"] = secret
 	}
 }
 
-//CreateRoom create room from janus-gateway videoroom plugin
-//jwsapi.WithMessageOption("publishers",10) to set publishers parm
-//see https://janus.conf.meetecho.com/docs/videoroom.html create room param
+// CreateRoom create room from janus-gateway videoroom plugin
+// jwsapi.WithMessageOption("publishers",10) to set publishers parm
+// see https://janus.conf.meetecho.com/docs/videoroom.html create room param
 func CreateRoom(h *jwsapi.Handle, opts ...jwsapi.MessageOption) (uint64, error) {
 	msg := jwsapi.Message{
 		jwsapi.AttrRequest: "create",
@@ -77,7 +77,7 @@ func CreateRoom(h *jwsapi.Handle, opts ...jwsapi.MessageOption) (uint64, error) 
 	return room, nil
 }
 
-//DestroyRoom destroy room
+// DestroyRoom destroy room
 func DestroyRoom(h *jwsapi.Handle, room uint64, opts ...jwsapi.MessageOption) error {
 
 	msg := jwsapi.Message{
@@ -95,7 +95,7 @@ func DestroyRoom(h *jwsapi.Handle, room uint64, opts ...jwsapi.MessageOption) er
 	return rsp.PluginDataError()
 }
 
-//Exists check room is exists
+// Exists check room is exists
 func Exists(h *jwsapi.Handle, room uint64) (bool, error) {
 	msg := jwsapi.Message{
 		jwsapi.AttrRequest: "exists",
@@ -112,7 +112,7 @@ func Exists(h *jwsapi.Handle, room uint64) (bool, error) {
 	return data.Bool("exists"), nil
 }
 
-//List list all rooms in janus-gateway videoroom
+// List list all rooms in janus-gateway videoroom
 func List(h *jwsapi.Handle) ([]Room, error) {
 
 	msg := jwsapi.Message{
@@ -137,7 +137,7 @@ func List(h *jwsapi.Handle) ([]Room, error) {
 	return jrooms, nil
 }
 
-//Listparticipants get all room publishers
+// Listparticipants get all room publishers
 func Listparticipants(h *jwsapi.Handle, room uint64) ([]Participant, error) {
 	msg := jwsapi.Message{
 		jwsapi.AttrRequest: "listparticipants",

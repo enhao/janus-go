@@ -1,4 +1,4 @@
-module github.com/newzai/janus-go
+module github.com/enhao/janus-go
 
 go 1.12
 

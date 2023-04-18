@@ -3,11 +3,11 @@ package videoroom
 import (
 	"context"
 
-	"github.com/newzai/janus-go/jwsapi"
+	"github.com/enhao/janus-go/jwsapi"
 	"github.com/pion/webrtc/v2"
 )
 
-//BaseSession base session
+// BaseSession base session
 type BaseSession struct {
 	ctx              context.Context
 	api              *webrtc.API

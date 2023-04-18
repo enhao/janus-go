@@ -5,11 +5,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/newzai/janus-go/logging"
+	"github.com/enhao/janus-go/logging"
 	"github.com/pkg/errors"
 )
 
-//Session janus gateway session
+// Session janus gateway session
 type Session struct {
 	ctx           context.Context
 	ID            uint64
@@ -20,7 +20,7 @@ type Session struct {
 	tasks         chan func(*Session)
 }
 
-//NewSession new session
+// NewSession new session
 func NewSession(ctx context.Context, id uint64, conn *Connection) *Session {
 
 	s := &Session{
@@ -36,7 +36,7 @@ func NewSession(ctx context.Context, id uint64, conn *Connection) *Session {
 	return s
 }
 
-//IsDestroy session has destroy
+// IsDestroy session has destroy
 func (s *Session) IsDestroy() bool {
 	if atomic.LoadInt32(&s.isDestroy) == 1 {
 		return true
@@ -86,20 +86,20 @@ func (s *Session) onMessage(conn *Connection, msg *Message) {
 
 }
 
-//Request send request, has success response
+// Request send request, has success response
 func (s *Session) Request(msg Message) (*Message, error) {
 
 	msg[attrSessionID] = s.ID
 	return s.conn.Request(msg)
 }
 
-//Message send message to janus, has ack ,event resposne
+// Message send message to janus, has ack ,event resposne
 func (s *Session) Message(msg Message) (*Message, error) {
 	msg[attrSessionID] = s.ID
 	return s.conn.Message(msg)
 }
 
-//Attach new handle from gateway
+// Attach new handle from gateway
 func (s *Session) Attach(pluginName string) (*Handle, error) {
 
 	msg := Message{
@@ -121,7 +121,7 @@ func (s *Session) Attach(pluginName string) (*Handle, error) {
 	return nil, errors.New("rsp error")
 }
 
-//Destroy  send destroy
+// Destroy  send destroy
 func (s *Session) Destroy() error {
 
 	msg := Message{
@@ -135,7 +135,7 @@ func (s *Session) Destroy() error {
 	return err
 }
 
-//claim for ws close,re connection
+// claim for ws close,re connection
 func (s *Session) claim() {
 
 	msg := Message{
